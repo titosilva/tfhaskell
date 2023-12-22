@@ -1,5 +1,13 @@
 {-# LANGUAGE CApiFFI #-}
-module TFHEBindings.TFHE where
+module TFHEBindings.TFHE (
+    gen_key_pair,
+    delete_key_pair,
+    get_private_key_from_pair,
+    get_public_key_from_pair,
+    encrypt_bit,
+    decrypt_bit,
+    delete_ciphertext
+) where
 
 import Data.Int
 import Foreign.Ptr
@@ -14,4 +22,4 @@ foreign import ccall "c/tfhe_bindings.h get_public_key_from_pair" get_public_key
 
 foreign import ccall "c/tfhe_bindings.h encrypt_bit" encrypt_bit :: TFHEPtr -> Int -> IO TFHEPtr
 foreign import ccall "c/tfhe_bindings.h decrypt_bit" decrypt_bit :: TFHEPtr -> TFHEPtr -> IO Int
-foreign import ccall "c/tfhe_bindings.h delete_ciphertext" delete_ciphertext :: TFHEPtr -> IO()
+foreign import ccall "c/tfhe_bindings.h delete_ciphertext" delete_ciphertext :: TFHEPtr -> IO ()
