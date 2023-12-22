@@ -9,7 +9,8 @@ module TFHEBindings.TFHE (
     delete_ciphertext,
     encrypted_and,
     encrypted_or,
-    encrypted_not
+    encrypted_not,
+    encrypted_xor
 ) where
 
 import Data.Int
@@ -30,3 +31,4 @@ foreign import ccall "c/tfhe_bindings.h delete_ciphertext" delete_ciphertext :: 
 foreign import ccall "c/tfhe_bindings.h encrypted_and" encrypted_and :: TFHEPtr -> TFHEPtr -> TFHEPtr -> IO TFHEPtr
 foreign import ccall "c/tfhe_bindings.h encrypted_or" encrypted_or :: TFHEPtr -> TFHEPtr -> TFHEPtr -> IO TFHEPtr
 foreign import ccall "c/tfhe_bindings.h encrypted_not" encrypted_not :: TFHEPtr -> TFHEPtr -> IO TFHEPtr
+foreign import ccall "c/tfhe_bindings.h encrypted_xor" encrypted_xor :: TFHEPtr -> TFHEPtr -> TFHEPtr -> IO TFHEPtr

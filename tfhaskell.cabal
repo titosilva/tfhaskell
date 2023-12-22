@@ -68,6 +68,7 @@ test-suite tfhaskell-test
   type: exitcode-stdio-1.0
   main-is: Spec.hs
   other-modules:
+      TFHEBindingsTests
       Paths_tfhaskell
   autogen-modules:
       Paths_tfhaskell

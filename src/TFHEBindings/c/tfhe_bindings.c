@@ -115,3 +115,14 @@ Ptr encrypted_not(Ptr pub_key, Ptr node) {
 
     return to_ptr(result);
 }
+
+Ptr encrypted_xor(Ptr pub_key, Ptr node1, Ptr node2) {
+    TFHEKey* key = from_ptr(pub_key, TFHEKey);
+    LweSample* ca = from_ptr(node1, LweSample);
+    LweSample* cb = from_ptr(node2, LweSample);
+    
+    LweSample* result = new_gate_bootstrapping_ciphertext(from_ptr(key->params, TFheGateBootstrappingParameterSet));
+    bootsXOR(result, ca, cb, from_ptr(key->key, TFheGateBootstrappingCloudKeySet));
+
+    return to_ptr(result);
+}
