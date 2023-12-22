@@ -2,6 +2,7 @@
 #include <tfhe/tfhe_io.h>
 #include "tfhe_bindings.h"
 #include <stdlib.h>
+#include <stdio.h>
 
 Ptr gen_key_pair(int seed) {
     const int minimum_lambda = 110;
@@ -39,4 +40,46 @@ void delete_key_pair(Ptr key_pair) {
     // hence no need of calling delete_public_key
     delete_private_key(kp->private_key);
     delete_params(kp->params);
+}
+
+Ptr get_private_key_from_pair(Ptr key_pair) {
+    TFHEKeyPair* kp = from_ptr(key_pair, TFHEKeyPair);
+    TFHEKey* priv_key = (TFHEKey*) calloc(1, sizeof(TFHEKey));
+
+    priv_key->key = kp->private_key;
+    priv_key->params = kp->params;
+
+    return to_ptr(priv_key);
+}
+
+Ptr get_public_key_from_pair(Ptr key_pair) {
+    TFHEKeyPair* kp = from_ptr(key_pair, TFHEKeyPair);
+    TFHEKey* pub_key = (TFHEKey*) calloc(1, sizeof(TFHEKey));
+
+    pub_key->key = kp->public_key;
+    pub_key->params = kp->params;
+
+    return to_ptr(pub_key);
+}
+
+Ptr encrypt_bit(Ptr priv_key, int bit) {
+    TFHEKey* key = from_ptr(priv_key, TFHEKey);
+
+    LweSample* cipher = new_gate_bootstrapping_ciphertext(from_ptr(key->params, TFheGateBootstrappingParameterSet));
+    bootsSymEncrypt(cipher, bit, from_ptr(key->key, TFheGateBootstrappingSecretKeySet));
+
+    return to_ptr(cipher);
+}
+
+int decrypt_bit(Ptr priv_key, Ptr encrypted_bit) {
+    TFHEKey* key = from_ptr(priv_key, TFHEKey);
+
+    LweSample* cipher = from_ptr(encrypted_bit, LweSample);
+    int result = bootsSymDecrypt(cipher, from_ptr(key->key, TFheGateBootstrappingSecretKeySet));
+
+    return result;
+}
+
+void delete_ciphertext(Ptr ciphertext) {
+    delete_gate_bootstrapping_ciphertext(from_ptr(ciphertext, LweSample));
 }

@@ -6,19 +6,26 @@
 #define to_ptr(x) (int64_t*)x
 #define from_ptr(x, t) ((t*)x)
 
-void generate_key_pair(int ctx);
-void create_encrypted_16bit_input_node(int ctx, int input_id, int16_t plaintext);
-void compute_16bit_minimum(int ctx, int out_id, int input1, int input2);
-int16_t decrypt_16bit_node(int ctx, int node_id);
-
-typedef struct TFHEKeyPair_str {
+typedef struct __TFHEKeyPair_str {
     Ptr private_key;
     Ptr public_key;
     Ptr params;
 } TFHEKeyPair;
+
+typedef struct __TFHEKey_str {
+    Ptr key;
+    Ptr params;
+} TFHEKey;
 
 Ptr gen_key_pair(int seed);
 void delete_private_key(Ptr private_key);
 void delete_public_key(Ptr public_key);
 void delete_params(Ptr params);
 void delete_key_pair(Ptr key_pair);
+
+Ptr get_private_key_from_pair(Ptr key_pair);
+Ptr get_public_key_from_pair(Ptr key_pair);
+
+Ptr encrypt_bit(Ptr priv_key, int bit);
+int decrypt_bit(Ptr priv_key, Ptr encrypted_bit);
+void delete_ciphertext(Ptr ciphertext);
