@@ -6,7 +6,10 @@ module TFHEBindings.TFHE (
     get_public_key_from_pair,
     encrypt_bit,
     decrypt_bit,
-    delete_ciphertext
+    delete_ciphertext,
+    encrypted_and,
+    encrypted_or,
+    encrypted_not
 ) where
 
 import Data.Int
@@ -23,3 +26,7 @@ foreign import ccall "c/tfhe_bindings.h get_public_key_from_pair" get_public_key
 foreign import ccall "c/tfhe_bindings.h encrypt_bit" encrypt_bit :: TFHEPtr -> Int -> IO TFHEPtr
 foreign import ccall "c/tfhe_bindings.h decrypt_bit" decrypt_bit :: TFHEPtr -> TFHEPtr -> IO Int
 foreign import ccall "c/tfhe_bindings.h delete_ciphertext" delete_ciphertext :: TFHEPtr -> IO ()
+
+foreign import ccall "c/tfhe_bindings.h encrypted_and" encrypted_and :: TFHEPtr -> TFHEPtr -> TFHEPtr -> IO TFHEPtr
+foreign import ccall "c/tfhe_bindings.h encrypted_or" encrypted_or :: TFHEPtr -> TFHEPtr -> TFHEPtr -> IO TFHEPtr
+foreign import ccall "c/tfhe_bindings.h encrypted_not" encrypted_not :: TFHEPtr -> TFHEPtr -> IO TFHEPtr

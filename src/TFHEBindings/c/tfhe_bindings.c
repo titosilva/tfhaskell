@@ -83,3 +83,35 @@ int decrypt_bit(Ptr priv_key, Ptr encrypted_bit) {
 void delete_ciphertext(Ptr ciphertext) {
     delete_gate_bootstrapping_ciphertext(from_ptr(ciphertext, LweSample));
 }
+
+Ptr encrypted_and(Ptr pub_key, Ptr node1, Ptr node2) {
+    TFHEKey* key = from_ptr(pub_key, TFHEKey);
+    LweSample* ca = from_ptr(node1, LweSample);
+    LweSample* cb = from_ptr(node2, LweSample);
+    
+    LweSample* result = new_gate_bootstrapping_ciphertext(from_ptr(key->params, TFheGateBootstrappingParameterSet));
+    bootsAND(result, ca, cb, from_ptr(key->key, TFheGateBootstrappingCloudKeySet));
+
+    return to_ptr(result);
+}
+
+Ptr encrypted_or(Ptr pub_key, Ptr node1, Ptr node2) {
+    TFHEKey* key = from_ptr(pub_key, TFHEKey);
+    LweSample* ca = from_ptr(node1, LweSample);
+    LweSample* cb = from_ptr(node2, LweSample);
+    
+    LweSample* result = new_gate_bootstrapping_ciphertext(from_ptr(key->params, TFheGateBootstrappingParameterSet));
+    bootsOR(result, ca, cb, from_ptr(key->key, TFheGateBootstrappingCloudKeySet));
+
+    return to_ptr(result);
+}
+
+Ptr encrypted_not(Ptr pub_key, Ptr node) {
+    TFHEKey* key = from_ptr(pub_key, TFHEKey);
+    LweSample* ca = from_ptr(node, LweSample);
+    
+    LweSample* result = new_gate_bootstrapping_ciphertext(from_ptr(key->params, TFheGateBootstrappingParameterSet));
+    bootsNOT(result, ca, from_ptr(key->key, TFheGateBootstrappingCloudKeySet));
+
+    return to_ptr(result);
+}

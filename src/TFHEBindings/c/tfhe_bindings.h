@@ -29,3 +29,7 @@ Ptr get_public_key_from_pair(Ptr key_pair);
 Ptr encrypt_bit(Ptr priv_key, int bit);
 int decrypt_bit(Ptr priv_key, Ptr encrypted_bit);
 void delete_ciphertext(Ptr ciphertext);
+
+Ptr encrypted_and(Ptr pub_key, Ptr node1, Ptr node2);
+Ptr encrypted_or(Ptr pub_key, Ptr node1, Ptr node2);
+Ptr encrypted_not(Ptr pub_key, Ptr node);
