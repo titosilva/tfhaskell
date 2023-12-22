@@ -1,0 +1,85 @@
+cabal-version: 2.2
+
+-- This file has been generated from package.yaml by hpack version 0.35.2.
+--
+-- see: https://github.com/sol/hpack
+
+name:           tfhaskell
+version:        0.1.0.0
+description:    Please see the README on GitHub at <https://github.com/titosilva/tfhaskell#readme>
+homepage:       https://github.com/titosilva/tfhaskell#readme
+bug-reports:    https://github.com/titosilva/tfhaskell/issues
+author:         Tito Silva
+maintainer:     jt.mat@hotmail.com
+copyright:      2023 Tito Silva
+license:        BSD-3-Clause
+license-file:   LICENSE
+build-type:     Simple
+extra-source-files:
+    README.md
+    CHANGELOG.md
+
+source-repository head
+  type: git
+  location: https://github.com/titosilva/tfhaskell
+
+library
+  exposed-modules:
+      Lib
+      TFHaskell.BitComputation
+      TFHaskell.BitExpressionTree
+      TFHEBindings.TFHE
+  other-modules:
+      Paths_tfhaskell
+  autogen-modules:
+      Paths_tfhaskell
+  hs-source-dirs:
+      src
+  ghc-options: -Wall -Wcompat -Widentities -Wincomplete-record-updates -Wincomplete-uni-patterns -Wmissing-export-lists -Wmissing-home-modules -Wpartial-fields -Wredundant-constraints
+  c-sources:
+      src/TFHEBindings/c/tfhe_bindings.c
+  extra-libraries:
+      tfhe-spqlios-fma
+  build-depends:
+      base >=4.7 && <5
+    , hspec
+  default-language: Haskell2010
+
+executable tfhaskell-exe
+  main-is: Main.hs
+  other-modules:
+      Paths_tfhaskell
+  autogen-modules:
+      Paths_tfhaskell
+  hs-source-dirs:
+      app
+  ghc-options: -Wall -Wcompat -Widentities -Wincomplete-record-updates -Wincomplete-uni-patterns -Wmissing-export-lists -Wmissing-home-modules -Wpartial-fields -Wredundant-constraints -threaded -rtsopts -with-rtsopts=-N
+  c-sources:
+      src/TFHEBindings/c/tfhe_bindings.c
+  extra-libraries:
+      tfhe-spqlios-fma
+  build-depends:
+      base >=4.7 && <5
+    , hspec
+    , tfhaskell
+  default-language: Haskell2010
+
+test-suite tfhaskell-test
+  type: exitcode-stdio-1.0
+  main-is: Spec.hs
+  other-modules:
+      Paths_tfhaskell
+  autogen-modules:
+      Paths_tfhaskell
+  hs-source-dirs:
+      test
+  ghc-options: -Wall -Wcompat -Widentities -Wincomplete-record-updates -Wincomplete-uni-patterns -Wmissing-export-lists -Wmissing-home-modules -Wpartial-fields -Wredundant-constraints -threaded -rtsopts -with-rtsopts=-N
+  c-sources:
+      src/TFHEBindings/c/tfhe_bindings.c
+  extra-libraries:
+      tfhe-spqlios-fma
+  build-depends:
+      base >=4.7 && <5
+    , hspec
+    , tfhaskell
+  default-language: Haskell2010

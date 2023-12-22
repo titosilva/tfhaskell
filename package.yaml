@@ -1,0 +1,65 @@
+name:                tfhaskell
+version:             0.1.0.0
+github:              "titosilva/tfhaskell"
+license:             BSD-3-Clause
+author:              "Tito Silva"
+maintainer:          "jt.mat@hotmail.com"
+copyright:           "2023 Tito Silva"
+
+extra-source-files:
+- README.md
+- CHANGELOG.md
+
+# Metadata used when publishing your package
+# synopsis:            Short description of your package
+# category:            Cryptography
+
+# To avoid duplicated efforts in documentation and dealing with the
+# complications of embedding Haddock markup inside cabal files, it is
+# common to point users to the README.md file.
+description:         Please see the README on GitHub at <https://github.com/titosilva/tfhaskell#readme>
+
+dependencies:
+- base >= 4.7 && < 5
+- hspec
+
+ghc-options:
+- -Wall
+- -Wcompat
+- -Widentities
+- -Wincomplete-record-updates
+- -Wincomplete-uni-patterns
+- -Wmissing-export-lists
+- -Wmissing-home-modules
+- -Wpartial-fields
+- -Wredundant-constraints
+
+extra-libraries: tfhe-spqlios-fma
+
+library:
+  source-dirs: src
+  c-sources: src/TFHEBindings/c/tfhe_bindings.c
+
+executables:
+  tfhaskell-exe:
+    main:                Main.hs
+    source-dirs:         app
+    c-sources: src/TFHEBindings/c/tfhe_bindings.c
+    ghc-options:
+    - -threaded
+    - -rtsopts
+    - -with-rtsopts=-N
+    dependencies:
+    - tfhaskell
+
+tests:
+  tfhaskell-test:
+    main:                Spec.hs
+    source-dirs:         test
+    c-sources: src/TFHEBindings/c/tfhe_bindings.c
+    ghc-options:
+    - -threaded
+    - -rtsopts
+    - -with-rtsopts=-N
+    dependencies:
+    - tfhaskell
