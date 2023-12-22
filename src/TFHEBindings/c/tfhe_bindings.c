@@ -126,3 +126,12 @@ Ptr encrypted_xor(Ptr pub_key, Ptr node1, Ptr node2) {
 
     return to_ptr(result);
 }
+
+Ptr encrypted_constant(Ptr pub_key, int bit) {
+    TFHEKey* key = from_ptr(pub_key, TFHEKey);
+    
+    LweSample* result = new_gate_bootstrapping_ciphertext(from_ptr(key->params, TFheGateBootstrappingParameterSet));
+    bootsCONSTANT(result, bit, from_ptr(key->key, TFheGateBootstrappingCloudKeySet));
+
+    return to_ptr(result);
+}

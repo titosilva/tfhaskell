@@ -1,5 +1,6 @@
 {-# LANGUAGE CApiFFI #-}
 module TFHEBindings.TFHE (
+    TFHEPtr,
     gen_key_pair,
     delete_key_pair,
     get_private_key_from_pair,
@@ -10,7 +11,8 @@ module TFHEBindings.TFHE (
     encrypted_and,
     encrypted_or,
     encrypted_not,
-    encrypted_xor
+    encrypted_xor,
+    encrypted_constant
 ) where
 
 import Data.Int
@@ -32,3 +34,4 @@ foreign import ccall "c/tfhe_bindings.h encrypted_and" encrypted_and :: TFHEPtr 
 foreign import ccall "c/tfhe_bindings.h encrypted_or" encrypted_or :: TFHEPtr -> TFHEPtr -> TFHEPtr -> IO TFHEPtr
 foreign import ccall "c/tfhe_bindings.h encrypted_not" encrypted_not :: TFHEPtr -> TFHEPtr -> IO TFHEPtr
 foreign import ccall "c/tfhe_bindings.h encrypted_xor" encrypted_xor :: TFHEPtr -> TFHEPtr -> TFHEPtr -> IO TFHEPtr
+foreign import ccall "c/tfhe_bindings.h encrypted_constant" encrypted_constant :: TFHEPtr -> Int -> IO TFHEPtr

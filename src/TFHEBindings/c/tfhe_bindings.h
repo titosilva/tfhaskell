@@ -34,3 +34,4 @@ Ptr encrypted_and(Ptr pub_key, Ptr node1, Ptr node2);
 Ptr encrypted_or(Ptr pub_key, Ptr node1, Ptr node2);
 Ptr encrypted_not(Ptr pub_key, Ptr node);
 Ptr encrypted_xor(Ptr pub_key, Ptr node1, Ptr node2);
+Ptr encrypted_constant(Ptr pub_key, int bit);

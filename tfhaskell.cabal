@@ -28,6 +28,7 @@ library
       Lib
       TFHaskell.BitComputation
       TFHaskell.BitExpressionTree
+      TFHaskell.EncryptedComputation
       TFHEBindings.TFHE
   other-modules:
       Paths_tfhaskell
@@ -68,6 +69,8 @@ test-suite tfhaskell-test
   type: exitcode-stdio-1.0
   main-is: Spec.hs
   other-modules:
+      EncryptedComputationTests
+      TFHaskellTests
       TFHEBindingsTests
       Paths_tfhaskell
   autogen-modules:

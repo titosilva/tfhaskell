@@ -109,3 +109,26 @@ testTFHEBindings = do
 
             d1 `shouldBe` 1
             d2 `shouldBe` 0
+        it "Encrypted constant" $ do
+            kp <- gen_key_pair 0
+            priv <- get_private_key_from_pair kp
+            pub <- get_public_key_from_pair kp
+
+            c1 <- encrypted_constant pub 1
+            c2 <- encrypted_constant pub 0
+
+            e1 <- encrypt_bit priv 1
+            r1 <- encrypted_xor pub e1 c1
+            r2 <- encrypted_xor pub e1 c2
+            d1 <- decrypt_bit priv r1
+            d2 <- decrypt_bit priv r2
+
+            delete_key_pair kp
+            delete_ciphertext e1
+            delete_ciphertext r1
+            delete_ciphertext r2
+            delete_ciphertext c1
+            delete_ciphertext c2
+
+            d1 `shouldBe` 0
+            d2 `shouldBe` 1

@@ -23,8 +23,8 @@ instance Bits BitExprTree where
 
     testBit _ _ = False
 
-    bit 0 = BECons True
-    bit _ = BECons False
+    bit _ = BECons True
+    zeroBits = BECons False
     
     popCount (BECons True) = 1
     popCount _ = 0
