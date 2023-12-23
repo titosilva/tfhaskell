@@ -7,6 +7,7 @@ module Main where
 
     main :: IO ()
     main = hspec $ do
+        testToBitArray
         testBitComputation
         testBitExprTree
         testTFHEBindings

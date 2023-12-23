@@ -1,4 +1,4 @@
-{-# LANGUAGE Arrows #-} 
+{-# LANGUAGE Arrows #-}
 module TFHaskellTests where
     import Test.Hspec
     import TFHaskell.BitExpressionTree
@@ -6,17 +6,29 @@ module TFHaskellTests where
     import Control.Arrow
     import TFHaskell.BitComputation
     import TFHaskell.Circuits
-    import TFHaskell.BitComputation (runComputation)
-    import TFHaskell.Circuits (muxPow2to1)
+    import Test.Hspec (SpecWith, describe)
+    import Data.Int
+    import Data.List (repeat)
+    import TFHaskell.Circuits (int16ToBitArray)
     
     andcons :: (Arrow a, Bits c) => c -> a c c
     andcons x = arr (x .&.)
-    
+
     orcons :: (Arrow a, Bits c) => c -> a c c
     orcons x = arr (x .|.)
-    
+
     nots :: Bits a => BitComputation a a
     nots = arr complement
+
+    testToBitArray :: SpecWith ()
+    testToBitArray = do
+        describe "toBitArray" $ do
+            it "2 as Int16 to bit array" $ do
+                int16ToBitArray (2::Int16) `shouldBe` (replicate 14 0 ++ [1, 0])
+            it "5 as Int16 to bit array" $ do
+                int16ToBitArray (5::Int16) `shouldBe` (replicate 13 0 ++ [1, 0, 1])
+            it "5 as Int16 to bit array then back" $ do
+                int16FromBitArray (int16ToBitArray 5) `shouldBe` (5::Int16)
 
     testBitComputation :: SpecWith ()
     testBitComputation = do
@@ -26,7 +38,7 @@ module TFHaskellTests where
             it "1 & 1 = 1" $ do
                 runComputation (BitComputation (.&. 1)) 1 `shouldBe` (1::Int)
             it "(1 .&. 1) .|. 0 = 1" $ do
-                runComputation (andcons 1 >>> orcons 0) 1 `shouldBe` (1::Int) 
+                runComputation (andcons 1 >>> orcons 0) 1 `shouldBe` (1::Int)
             it "(1 .&. 0) .|. 0 = 0" $ do
                 runComputation (andcons False >>> orcons False) True `shouldBe` False
             it "not 1 = 0" $ do
@@ -38,9 +50,9 @@ module TFHaskellTests where
             it "1 & 0 = 0" $ do
                 runComputation band (True, True) `shouldBe` True
             it "1 | 0 = 1" $ do
-                runComputation bor (True, False) `shouldBe` True 
+                runComputation bor (True, False) `shouldBe` True
             it "0 | 0 = 0" $ do
-                runComputation bor (False, False) `shouldBe` False 
+                runComputation bor (False, False) `shouldBe` False
             it "0 + 0 + 0 = 0 (no carry)" $ do
                 runComputation oneBitAdder (0, 0, 0) `shouldBe` (0, 0::Int)
             it "1 + 0 + 0 = 1 (no carry)" $ do
@@ -71,6 +83,14 @@ module TFHaskellTests where
                 runComputation (muxPow2to1 2) ([0, 1, 0, 1], [0, 1]) `shouldBe` (1::Int)
             it "mux4to1 0 1 0 1, sel: 0 0 = 0" $ do
                 runComputation (muxPow2to1 2) ([0, 1, 0, 1], [0, 0]) `shouldBe` (0::Int)
+            it "16 bit mux with 4 inputs, sel = 00" $ do
+                runComputation (nBitMux 16 2) (map int16ToBitArray [2, 231, 22, -1], [0, 0]) `shouldBe` int16ToBitArray (2::Int16)
+            it "16 bit mux with 4 inputs, sel = 11" $ do
+                runComputation (nBitMux 16 2) (map int16ToBitArray [2, 231, 22, -1], [1, 1]) `shouldBe` int16ToBitArray (-1::Int16)
+            it "16 bit mux with 4 inputs, sel = 01" $ do
+                runComputation (nBitMux 16 2) (map int16ToBitArray [2, 231, 22, -1], [0, 1]) `shouldBe` int16ToBitArray (231::Int16)
+            it "16 bit mux with 4 inputs, sel = 10" $ do
+                runComputation (nBitMux 16 2) (map int16ToBitArray [2, 231, 22, -1], [1, 0]) `shouldBe` int16ToBitArray (22::Int16)
 
     testBitExprTree :: SpecWith ()
     testBitExprTree = do
