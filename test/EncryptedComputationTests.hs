@@ -13,7 +13,6 @@ import TFHaskell.EncryptedComputation
 import TFHaskell.BitExpressionTree
 import TFHaskell.BitComputation
 import TFHaskell.Circuits
-import TFHaskell.BitComputation (BitComputation)
 import Data.Foldable (Foldable(length))
 
 andcons :: (Arrow a, Bits c) => c -> a c c
@@ -66,28 +65,6 @@ testEncryptedComputation = do
             delete_ciphertext r1
 
             d1 `shouldBe` 0
-
-        it "mux2to1" $ let compiled_mux = compile (mux2to1 (bit 1) zeroBits) in do
-            kp <- gen_key_pair 0
-            priv <- get_private_key_from_pair kp
-            pub <- get_public_key_from_pair kp
-
-            e1 <- encrypt_bit priv 1
-            r1 <- runExpressionEncrypted compiled_mux pub [e1]
-            d1 <- decrypt_bit priv r1
-
-            e2 <- encrypt_bit priv 0
-            r2 <- runExpressionEncrypted compiled_mux pub [e2]
-            d2 <- decrypt_bit priv r2
-
-            delete_key_pair kp
-            delete_ciphertext e1
-            delete_ciphertext r1
-            delete_ciphertext e2
-            delete_ciphertext r2
-
-            d1 `shouldBe` 0
-            d2 `shouldBe` 1
 
         it "one bit adder - 1 + 1 + 1 = 1 + carry" $ let compiled_adder = compileArray 3 oneBitAdderWrapper in do
             kp <- gen_key_pair 0

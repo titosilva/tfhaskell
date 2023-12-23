@@ -1,13 +1,11 @@
 {-# LANGUAGE Arrows #-} 
 module TFHaskellTests where
     import Test.Hspec
-    import TFHaskell.BitComputation
-    import TFHaskell.Circuits
     import TFHaskell.BitExpressionTree
     import Data.Bits
     import Control.Arrow
-    import TFHaskell.BitComputation (runComputation)
-    import TFHaskell.Circuits (oneBitAdder, nBitAdder)
+    import TFHaskell.BitComputation
+    import TFHaskell.Circuits
     
     andcons :: (Arrow a, Bits c) => c -> a c c
     andcons x = arr (x .&.)
@@ -17,12 +15,6 @@ module TFHaskellTests where
     
     nots :: Bits a => BitComputation a a
     nots = arr complement
-
-    mux2to1 :: (Bits a) => a -> a -> BitComputation a a
-    mux2to1 x y = proc z -> do
-        a <- andcons x -< z
-        b <- andcons y <<< nots -< z
-        returnA -< (a .|. b)
 
     testBitComputation :: SpecWith ()
     testBitComputation = do
@@ -39,12 +31,6 @@ module TFHaskellTests where
                 runComputation nots True `shouldBe` False
             it "not 0 = 1" $ do
                 runComputation nots False `shouldBe` True
-            it "Multiplex 2 to 1 v1" $ do
-                runComputation (mux2to1 True False) True `shouldBe` True
-            it "Multiplex 2 to 1 v2" $ do
-                runComputation (mux2to1 True False) False `shouldBe` False
-            it "Multiplex 2 to 1 v2" $ do
-                runComputation (mux2to1 False True) False `shouldBe` True
             it "1 & 0 = 0" $ do
                 runComputation band (True, False) `shouldBe` False
             it "1 & 0 = 0" $ do
@@ -65,6 +51,10 @@ module TFHaskellTests where
                 runComputation (nBitAdder 4) ([1, 1, 0, 1], [0, 0, 1, 0]) `shouldBe` ([1, 1, 1, 1], 0::Int)
             it "1010 + 1010 = 0100 (carry)" $ do
                 runComputation (nBitAdder 4) ([1, 0, 1, 0], [1, 0, 1, 0]) `shouldBe` ([0, 1, 0, 0], 1::Int)
+            it "mux 1 0, sel: 0 = 1" $ do
+                runComputation mux2to1 (1, 0, 0) `shouldBe` (1::Int)
+            it "mux 1 0, sel: 0 = 0" $ do
+                runComputation mux2to1 (1, 0, 1) `shouldBe` (0::Int)
 
     testBitExprTree :: SpecWith ()
     testBitExprTree = do
@@ -78,4 +68,4 @@ module TFHaskellTests where
             it "Expression tree andcons" $ do
                 runComputation (andcons (BECons True)) (BECons False) `shouldBe` BEAnd (BECons True) (BECons False)
             it "Expression tree mux2to1" $ do
-                runComputation (mux2to1 (BEVar 1) (BEVar 2)) (BEVar 3) `shouldBe` BEOr (BEAnd (BEVar 1) (BEVar 3)) (BEAnd (BEVar 2) (BENot (BEVar 3)))
+                runComputation mux2to1 (BEVar 1, BEVar 2, BEVar 3) `shouldBe` BEOr (BEAnd (BEVar 1) (BENot (BEVar 3))) (BEAnd (BEVar 2) (BEVar 3))
