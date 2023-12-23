@@ -35,7 +35,7 @@ oneBitAdder = proc (a, b, cin) -> do
 
     returnA -< (s, cout)
 
-nBitAdder :: Bits a => Natural -> BitComputation ([a], [a]) ([a] , a)
+nBitAdder :: Bits a => Int -> BitComputation ([a], [a]) ([a] , a)
 nBitAdder 0 = proc (_, _) -> do
     returnA -< ([], zeroBits)
 nBitAdder 1 = proc (x, y) -> do

@@ -12,7 +12,10 @@ module TFHEBindings.TFHE (
     encrypted_or,
     encrypted_not,
     encrypted_xor,
-    encrypted_constant
+    encrypted_constant,
+    encryptBits,
+    decryptBits,
+    deleteCiphertexts
 ) where
 
 import Data.Int
@@ -35,3 +38,12 @@ foreign import ccall "c/tfhe_bindings.h encrypted_or" encrypted_or :: TFHEPtr ->
 foreign import ccall "c/tfhe_bindings.h encrypted_not" encrypted_not :: TFHEPtr -> TFHEPtr -> IO TFHEPtr
 foreign import ccall "c/tfhe_bindings.h encrypted_xor" encrypted_xor :: TFHEPtr -> TFHEPtr -> TFHEPtr -> IO TFHEPtr
 foreign import ccall "c/tfhe_bindings.h encrypted_constant" encrypted_constant :: TFHEPtr -> Int -> IO TFHEPtr
+
+encryptBits :: TFHEPtr -> [Int] -> IO [TFHEPtr]
+encryptBits priv = mapM (encrypt_bit priv)
+
+decryptBits :: TFHEPtr -> [TFHEPtr] -> IO [Int]
+decryptBits priv = mapM (decrypt_bit priv)
+
+deleteCiphertexts :: [TFHEPtr] -> IO ()
+deleteCiphertexts = mapM_ delete_ciphertext
