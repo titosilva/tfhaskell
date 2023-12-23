@@ -6,6 +6,8 @@ module TFHaskellTests where
     import Control.Arrow
     import TFHaskell.BitComputation
     import TFHaskell.Circuits
+    import TFHaskell.BitComputation (runComputation)
+    import TFHaskell.Circuits (muxPow2to1)
     
     andcons :: (Arrow a, Bits c) => c -> a c c
     andcons x = arr (x .&.)
@@ -53,8 +55,22 @@ module TFHaskellTests where
                 runComputation (nBitAdder 4) ([1, 0, 1, 0], [1, 0, 1, 0]) `shouldBe` ([0, 1, 0, 0], 1::Int)
             it "mux 1 0, sel: 0 = 1" $ do
                 runComputation mux2to1 (1, 0, 0) `shouldBe` (1::Int)
-            it "mux 1 0, sel: 0 = 0" $ do
+            it "mux 1 0, sel: 1 = 0" $ do
                 runComputation mux2to1 (1, 0, 1) `shouldBe` (0::Int)
+            it "mux2to1 1 0, sel: 0 = 1" $ do
+                runComputation (muxPow2to1 1) ([1, 0], [0]) `shouldBe` (1::Int)
+            it "mux2to1 1 0, sel: 1 = 0" $ do
+                runComputation (muxPow2to1 1) ([1, 0], [1]) `shouldBe` (0::Int)
+            it "mux4to1 1 0 0 0, sel: 0 0 = 1" $ do
+                runComputation (muxPow2to1 2) ([1, 0, 0, 0], [0, 0]) `shouldBe` (1::Int)
+            it "mux4to1 1 0 0 0, sel: 1 0 = 0" $ do
+                runComputation (muxPow2to1 2) ([1, 0, 0, 0], [1, 0]) `shouldBe` (0::Int)
+            it "mux4to1 0 1 0 1, sel: 1 1 = 1" $ do
+                runComputation (muxPow2to1 2) ([0, 1, 0, 1], [1, 1]) `shouldBe` (1::Int)
+            it "mux4to1 0 1 0 1, sel: 0 1 = 1" $ do
+                runComputation (muxPow2to1 2) ([0, 1, 0, 1], [0, 1]) `shouldBe` (1::Int)
+            it "mux4to1 0 1 0 1, sel: 0 0 = 0" $ do
+                runComputation (muxPow2to1 2) ([0, 1, 0, 1], [0, 0]) `shouldBe` (0::Int)
 
     testBitExprTree :: SpecWith ()
     testBitExprTree = do

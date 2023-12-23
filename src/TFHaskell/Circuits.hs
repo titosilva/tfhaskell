@@ -1,4 +1,4 @@
-{-# LANGUAGE Arrows #-} 
+{-# LANGUAGE Arrows #-}
 module TFHaskell.Circuits where
 
 import TFHaskell.BitComputation
@@ -8,7 +8,7 @@ import GHC.Natural
 import Data.Maybe (fromJust)
 import Data.List (uncons)
 
-bind :: BitComputation a a 
+bind :: BitComputation a a
 bind = proc a -> do
     returnA -< a
 
@@ -66,3 +66,27 @@ mux2to1 = proc (i1, i2, sel) -> do
     i2sel <- band -< (i2, sel)
 
     returnA -< i1sel .|. i2sel
+
+muxPow2to1 :: Bits a => Int -> BitComputation ([a], [a]) a
+muxPow2to1 0 = proc (x, _) -> do returnA -< head x
+muxPow2to1 1 = proc (x, y) -> do
+    i1 <- bind -< head x
+    i2 <- bind -< x !! 1
+    sel <- bind -< head y
+
+    mux <- mux2to1 -< (i1, i2, sel)
+
+    returnA -< mux
+
+muxPow2to1 n = proc (x, y) -> do
+    x1 <- bind -< take (2^(n - 1)) x
+    x2 <- bind -< drop (2^(n - 1)) x
+    (sel, ys) <- bind -< fromJust $ uncons y
+
+    prev1 <- muxPow2to1 (n - 1) -< (x1, ys)
+    prev2 <- muxPow2to1 (n - 1) -< (x2, ys)
+
+    prev1sel <- second bnot >>> band -< (prev1, sel)
+    prev2sel <- band -< (prev2, sel)
+
+    returnA -< prev1sel .|. prev2sel
