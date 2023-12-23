@@ -5,10 +5,13 @@ import TFHaskell.BitExpressionTree
 import TFHEBindings.TFHE
 
 compile :: BitComputation BitExprTree BitExprTree -> BitExprTree
-compile c = runComputation c (BEVar "n0")
+compile c = runComputation c (BEVar 0)
 
-runExpressionEncrypted :: BitExprTree -> TFHEPtr -> TFHEPtr -> IO TFHEPtr
-runExpressionEncrypted (BEVar _) _ x = return x
+compileArray :: Int -> BitComputation [BitExprTree] [BitExprTree] -> [BitExprTree]
+compileArray sizeOfInput c = runComputation c (map BEVar [0..sizeOfInput])
+
+runExpressionEncrypted :: BitExprTree -> TFHEPtr -> [TFHEPtr] -> IO TFHEPtr
+runExpressionEncrypted (BEVar i) _ vars = return (vars!!i)
 
 runExpressionEncrypted (BECons b) pub _ = encrypted_constant pub (if b then 1 else 0)
 
@@ -31,5 +34,5 @@ runExpressionEncrypted (BENot x) pub r = do
     xe <- runExpressionEncrypted x pub r
     encrypted_not pub xe
 
-
-
+runExpressionArrayEncrypted :: [BitExprTree] -> TFHEPtr -> [TFHEPtr] -> IO [TFHEPtr]
+runExpressionArrayEncrypted exprs pub vars = mapM (\expr -> runExpressionEncrypted expr pub vars) exprs

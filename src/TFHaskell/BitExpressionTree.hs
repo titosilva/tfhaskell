@@ -4,7 +4,7 @@ import Data.Bits
 
 data BitExprTree = 
     BECons Bool |
-    BEVar String |
+    BEVar Int |
     BEAnd BitExprTree BitExprTree |
     BEOr BitExprTree BitExprTree |
     BEXor BitExprTree BitExprTree |

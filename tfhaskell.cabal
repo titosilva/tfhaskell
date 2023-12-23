@@ -28,6 +28,7 @@ library
       Lib
       TFHaskell.BitComputation
       TFHaskell.BitExpressionTree
+      TFHaskell.Circuits
       TFHaskell.EncryptedComputation
       TFHEBindings.TFHE
   other-modules:

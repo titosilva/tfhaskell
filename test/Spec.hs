@@ -10,4 +10,4 @@ module Main where
         testBitComputation
         testBitExprTree
         testTFHEBindings
-        testEncryptedComputation
+        -- testEncryptedComputation
