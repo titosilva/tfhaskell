@@ -1,4 +1,5 @@
 {-# LANGUAGE NoImplicitPrelude #-}
+{-# LANGUAGE InstanceSigs #-}
 module TFHaskell.BitComputation where
     import Control.Category
     import Control.Arrow
@@ -14,5 +15,6 @@ module TFHaskell.BitComputation where
         second (BitComputation f) = BitComputation (mapSnd f) where mapSnd g (a, b) = (a, g b)
 
     instance Category BitComputation where
+        (.) :: BitComputation b c -> BitComputation a b -> BitComputation a c
         (BitComputation f) . (BitComputation g) = BitComputation (f . g)
         id = arr Control.Category.id
